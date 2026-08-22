@@ -3,6 +3,10 @@ services:
   db:
     restart: always
     ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
@@ -10,19 +14,28 @@ services:
   redis:
     restart: always
     ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 128M
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
 
   backend:
     restart: always
+    ports: []
     environment:
       - DJANGO_DEBUG=False
+    deploy:
+      resources:
+        limits:
+          memory: 384M
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/destinations/')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -36,6 +49,10 @@ services:
     restart: always
     ports:
       - "127.0.0.1:8080:80"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
     depends_on:
       backend:
         condition: service_started
