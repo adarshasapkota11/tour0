@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; margin: 0; padding: 0; background: #f8fafc; }
+    .container { max-width: 560px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
+    .header { background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 32px 24px; text-align: center; }
+    .header h1 { color: #fff; font-size: 20px; margin: 0; }
+    .body { padding: 32px 24px; }
+    .label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .value { font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 20px; }
+    .divider { border: none; border-top: 1px solid #e2e8f0; margin: 20px 0; }
+    .btn { display: inline-block; padding: 12px 24px; background: #4f46e5; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px; }
+    .footer { padding: 20px 24px; text-align: center; font-size: 12px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Booking Confirmed</h1>
+    </div>
+    <div class="body">
+      <p>Hi {{ user.full_name|default:user.email }},</p>
+      <p>Your booking has been confirmed. Here are the details:</p>
+
+      <div class="label">Destination</div>
+      <div class="value">{{ destination }}</div>
+
+      <div class="label">Package / Activity</div>
+      <div class="value">{{ item_name }}</div>
+
+      <div class="label">Travel Date</div>
+      <div class="value">{{ booking.travel_date }}</div>
+
+      <div class="label">Travelers</div>
+      <div class="value">{{ booking.travelers }}</div>
+
+      <hr class="divider">
+
+      <div class="label">Total Paid</div>
+      <div class="value" style="color: #4f46e5;">NPR {{ booking.total_price }}</div>
+
+      <a href="{{ frontend_url }}/confirmation/{{ booking.id }}" class="btn">View Booking</a>
+    </div>
+    <div class="footer">
+      &copy; TourNepal &mdash; Explore Nepal with confidence.
+    </div>
+  </div>
+</body>
+</html>

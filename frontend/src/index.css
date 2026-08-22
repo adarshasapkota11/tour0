@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  --brand-50: #eef7ff;
+  --brand-100: #d9edff;
+  --brand-200: #bce0ff;
+  --brand-300: #8ecdff;
+  --brand-400: #59b0ff;
+  --brand-500: #338cff;
+  --brand-600: #1b6af5;
+  --brand-700: #1452e1;
+  --brand-800: #1743b6;
+  --brand-900: #193c8f;
+  --surface: #f8fafc;
+  --card: #ffffff;
+  --nav: rgba(255, 255, 255, 0.92);
+  --subtle: #f3f4f6;
+  --ink: #111827;
+  --ink-subtle: #374151;
+  --ink-muted: #4b5563;
+  --ink-faint: #6b7280;
+  --line: #e5e7eb;
+  --line-strong: #d1d5db;
+  --brand-tint: #eef7ff;
+  --brand-tint-fg: #1452e1;
+  --success-bg: #ecfdf5;
+  --success-fg: #047857;
+  --warn-bg: #fffbeb;
+  --warn-fg: #b45309;
+  --danger-bg: #fef2f2;
+  --danger-fg: #b91c1c;
+}
+
+.dark {
+  color-scheme: dark;
+  --brand-50: rgba(27, 106, 245, 0.16);
+  --brand-100: #12284f;
+  --brand-200: #1e3a6e;
+  --brand-300: #8ecdff;
+  --brand-400: #59b0ff;
+  --brand-500: #338cff;
+  --brand-600: #3b82f6;
+  --brand-700: #2f6fd6;
+  --brand-800: #1d4ed8;
+  --brand-900: #93c5fd;
+  --surface: #020617;
+  --card: #0f172a;
+  --nav: rgba(15, 23, 42, 0.92);
+  --subtle: #1e293b;
+  --ink: #f1f5f9;
+  --ink-subtle: #cbd5e1;
+  --ink-muted: #94a3b8;
+  --ink-faint: #64748b;
+  --line: #1e293b;
+  --line-strong: #334155;
+  --brand-tint: rgba(27, 106, 245, 0.16);
+  --brand-tint-fg: #8ecdff;
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-fg: #6ee7b7;
+  --warn-bg: rgba(245, 158, 11, 0.15);
+  --warn-fg: #fcd34d;
+  --danger-bg: rgba(239, 68, 68, 0.15);
+  --danger-fg: #fca5a5;
+}
+
+@theme inline {
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-nav: var(--nav);
+  --color-subtle: var(--subtle);
+  --color-ink: var(--ink);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-brand-tint: var(--brand-tint);
+  --color-brand-tint-fg: var(--brand-tint-fg);
+  --color-success-bg: var(--success-bg);
+  --color-success-fg: var(--success-fg);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-fg: var(--warn-fg);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-fg: var(--danger-fg);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-surface text-ink antialiased;
+  }
+  *,
+  ::before,
+  ::after {
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      color 200ms ease;
+  }
+  ::selection {
+    @apply bg-brand-500/25;
+  }
+}
+
+@layer components {
+  .field {
+    @apply w-full px-4 py-3 rounded-xl border border-line-strong bg-card text-ink placeholder:text-ink-faint focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none;
+  }
+  .field-label {
+    @apply block text-sm font-medium text-ink-subtle mb-1;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-3 font-semibold bg-brand-600 hover:bg-brand-700 disabled:opacity-60 text-white rounded-xl transition-colors;
+  }
+}
+
+.dark .leaflet-container {
+  background: #0f172a;
+}
+.dark .leaflet-bar a {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-bottom-color: #334155;
+}
+.dark .leaflet-bar a:hover {
+  background: #334155;
+}
+.dark .leaflet-bar {
+  border-color: #334155;
+}
+.dark .leaflet-control-attribution {
+  background: rgba(15, 23, 42, 0.85);
+  color: #94a3b8;
+}
+.dark .leaflet-control-attribution a {
+  color: #8ecdff;
+}
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.map-card-enter {
+  animation: card-in 260ms ease-out;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 200ms ease-out;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-slide-up {
+  animation: slide-up 250ms ease-out;
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-enter 300ms ease-out;
+}
