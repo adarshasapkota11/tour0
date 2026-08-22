@@ -20,7 +20,7 @@ if [ -d "$APP_DIR/.git" ]; then
     git pull
 else
     sudo rm -rf "$APP_DIR"
-    sudo git clone https://github.com/YOUR_GITHUB_REPO.git "$APP_DIR"
+    sudo git clone https://github.com/adarshasapkota11/tour0 "$APP_DIR"
     cd "$APP_DIR"
 fi
 
