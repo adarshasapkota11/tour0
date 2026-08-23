@@ -6,13 +6,22 @@ import { useTheme } from '../context/ThemeContext.jsx'
 import { useI18n } from '../i18n/index.jsx'
 import 'leaflet/dist/leaflet.css'
 
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 const pinHtml = (name, featured, selected) => `
   <div class="flex flex-col items-center" style="min-width:60px">
     <div class="relative w-5 h-5">
       <span class="absolute inset-0 rounded-full ${selected ? 'bg-green-400' : 'bg-blue-300'} opacity-70 ${featured ? 'animate-ping' : ''}"></span>
       <span class="absolute inset-0 rounded-full ${selected ? 'bg-green-600 border-white' : 'bg-blue-600 border-white'} border-2 shadow-lg ${selected ? 'ring-2 ring-white/60' : ''}"></span>
     </div>
-    <span class="mt-0.5 text-[10px] font-semibold leading-none text-center whitespace-nowrap ${selected ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'} drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">${name}</span>
+    <span class="mt-0.5 text-[10px] font-semibold leading-none text-center whitespace-nowrap ${selected ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'} drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">${escapeHtml(name)}</span>
   </div>
 `
 

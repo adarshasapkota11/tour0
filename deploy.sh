@@ -8,13 +8,22 @@ APP_DIR="/opt/tournepal"
 echo "=== TourNepal Deployment ==="
 echo ""
 
-# 1. System setup
-echo "[1/8] Installing Nginx + Certbot..."
-sudo apt-get update -qq
-sudo apt-get install -y -qq nginx certbot python3-certbot-nginx
+# 1. Pre-flight: check disk space
+echo "[1/8] Pre-flight checks..."
+DISK_PCT=$(df / --output=pcent | tail -1 | tr -d '% ')
+if [ "$DISK_PCT" -gt 90 ]; then
+    echo "ERROR: Disk usage is ${DISK_PCT}% — too high to deploy safely."
+    echo "       Run: sudo journalctl --vacuum-size=10M && sudo docker image prune -af"
+    exit 1
+fi
 
-# 2. Clone or pull repo
-echo "[2/8] Setting up application..."
+# 2. System setup
+echo "[2/8] Installing Nginx + Certbot..."
+sudo apt-get update -qq
+sudo apt-get install -y -qq nginx certbot python3-certbot-nginx ufw
+
+# 3. Clone or pull repo
+echo "[3/8] Setting up application..."
 if [ -d "$APP_DIR/.git" ]; then
     cd "$APP_DIR"
     git pull
@@ -24,35 +33,50 @@ else
     cd "$APP_DIR"
 fi
 
-# 3. Copy production env
-echo "[3/8] Configuring environment..."
+# 4. Copy production env
+echo "[4/8] Configuring environment..."
 if [ ! -f ".env.production" ]; then
     echo "ERROR: .env.production not found! Copy it to the repo root first."
     exit 1
 fi
 cp .env.production backend/.env
 
-# 4. Build and start services
-echo "[4/8] Building and starting Docker services..."
+# 5. Build and start services
+echo "[5/8] Building and starting Docker services..."
 sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down 2>/dev/null || true
 sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
-# 5. Wait for backend
-echo "[5/8] Waiting for backend..."
+# 6. Wait for backend
+echo "[6/8] Waiting for backend..."
 sleep 15
-
-# 6. Seed database
-echo "[6/8] Seeding database..."
-sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T backend python manage.py seed_uat || true
 
 # 7. Nginx reverse proxy (before certbot)
 echo "[7/8] Configuring Nginx..."
 sudo tee /etc/nginx/sites-available/tournepal > /dev/null << 'NGINXEOF'
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
 server {
     listen 80;
     server_name tour.aprayogshala.com.np;
 
     client_max_body_size 20M;
+
+    proxy_buffer_size 16k;
+    proxy_buffers 8 32k;
+    proxy_busy_buffers_size 64k;
+    proxy_http_version 1.1;
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml text/javascript image/svg+xml;
+    gzip_vary on;
+    gzip_min_length 256;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -61,7 +85,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
+        proxy_set_header Connection $connection_upgrade;
         proxy_read_timeout 86400;
     }
 }
@@ -92,11 +116,7 @@ echo ""
 echo "  URL:    https://$DOMAIN"
 echo "  Admin:  https://$DOMAIN/admin"
 echo "  API:    https://$DOMAIN/api/"
-echo ""
-echo "  UAT Users:"
-echo "    Customer:  customer@uat.tour0 / customer123!"
-echo "    Admin:     admin@uat.tour0 / admin123!"
-echo "    Super:     superadmin@uat.tour0 / admin123!"
+echo "  Health: https://$DOMAIN/health/"
 echo ""
 echo "  To update later:"
 echo "    cd $APP_DIR && git pull"

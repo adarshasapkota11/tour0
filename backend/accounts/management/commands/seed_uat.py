@@ -11,6 +11,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 
 from django.contrib.auth.models import Group
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -35,6 +36,13 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        if not settings.DEBUG:
+            self.stdout.write(self.style.WARNING(
+                "Skipping UAT seed in production (DEBUG=False). "
+                "Set DJANGO_DEBUG=True to run."
+            ))
+            return
+
         self.stdout.write("Seeding UAT data…")
 
         call_command("setup_groups", verbosity=0)

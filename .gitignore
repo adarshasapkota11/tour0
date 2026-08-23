@@ -1,0 +1,45 @@
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+test-results/
+playwright-report/
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Docker
+*.log
+
+# Media (user uploads)
+backend/media/
+
+# Static files (collected)
+backend/staticfiles/

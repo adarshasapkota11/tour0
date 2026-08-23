@@ -6,6 +6,7 @@ Run with:  python manage.py seed_e2e
 
 from datetime import date, timedelta
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -27,6 +28,13 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
+        if not settings.DEBUG:
+            self.stdout.write(self.style.WARNING(
+                "Skipping E2E seed in production (DEBUG=False). "
+                "Set DJANGO_DEBUG=True to run."
+            ))
+            return
+
         self.stdout.write("Resetting database…")
         Group.objects.all().delete()
         Notification.objects.all().delete()
